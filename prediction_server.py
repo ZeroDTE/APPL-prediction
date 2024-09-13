@@ -20,9 +20,13 @@ def load_models():
             model_high = pickle.load(f)
         with open('model_low.pkl', 'rb') as f:
             model_low = pickle.load(f)
+        print("All models loaded successfully")
         return True
-    except FileNotFoundError:
-        print("Model files not found. Models will be loaded when available.")
+    except FileNotFoundError as e:
+        print(f"Error loading models: {e}")
+        return False
+    except Exception as e:
+        print(f"Unexpected error loading models: {e}")
         return False
 
 # Try to load models at startup
