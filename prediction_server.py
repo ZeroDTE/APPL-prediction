@@ -4,24 +4,6 @@ import numpy as np
 import yfinance as yf
 import os
 import logging
-
-app = Flask(__name__)
-
-# Set up logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-# Global variables to hold models
-model_close = None
-model_high = None
-model_low = None
-
-from flask import Flask, request, jsonify
-import pickle
-import numpy as np
-import yfinance as yf
-import os
-import logging
 import sklearn
 
 app = Flask(__name__)
