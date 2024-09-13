@@ -16,9 +16,33 @@ model_close = None
 model_high = None
 model_low = None
 
+from flask import Flask, request, jsonify
+import pickle
+import numpy as np
+import yfinance as yf
+import os
+import logging
+import sklearn
+
+app = Flask(__name__)
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Global variables to hold models
+model_close = None
+model_high = None
+model_low = None
+
 def load_models():
     global model_close, model_high, model_low
     try:
+        logger.info(f"Current working directory: {os.getcwd()}")
+        logger.info(f"Files in current directory: {os.listdir()}")
+        logger.info(f"NumPy version: {np.__version__}")
+        logger.info(f"scikit-learn version: {sklearn.__version__}")
+        
         with open('model_close.pkl', 'rb') as f:
             model_close = pickle.load(f)
         with open('model_high.pkl', 'rb') as f:
@@ -31,7 +55,7 @@ def load_models():
         logger.error(f"Error loading models: {e}")
         return False
     except Exception as e:
-        logger.error(f"Unexpected error loading models: {e}")
+        logger.error(f"Unexpected error loading models: {e}", exc_info=True)
         return False
 
 # Try to load models at startup
