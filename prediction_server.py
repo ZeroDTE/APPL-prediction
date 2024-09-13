@@ -3,8 +3,13 @@ import pickle
 import numpy as np
 import yfinance as yf
 import os
+import logging
 
 app = Flask(__name__)
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Global variables to hold models
 model_close = None
@@ -20,13 +25,13 @@ def load_models():
             model_high = pickle.load(f)
         with open('model_low.pkl', 'rb') as f:
             model_low = pickle.load(f)
-        print("All models loaded successfully")
+        logger.info("All models loaded successfully")
         return True
     except FileNotFoundError as e:
-        print(f"Error loading models: {e}")
+        logger.error(f"Error loading models: {e}")
         return False
     except Exception as e:
-        print(f"Unexpected error loading models: {e}")
+        logger.error(f"Unexpected error loading models: {e}")
         return False
 
 # Try to load models at startup
@@ -38,7 +43,7 @@ def get_data(symbol, period="5d", interval="1m"):
         data = ticker.history(period=period, interval=interval)
         return data
     except Exception as e:
-        print(f"Error fetching data: {e}")
+        logger.error(f"Error fetching data: {e}")
         return None
 
 def create_features(data, lookback=5):
@@ -81,5 +86,11 @@ def predict():
         'predicted_low': float(prediction_low)
     })
 
+@app.route('/')
+def home():
+    return "Welcome to the prediction server!"
+
 if __name__ == '__main__':
+    logger.info(f"Current working directory: {os.getcwd()}")
+    logger.info(f"Files in current directory: {os.listdir()}")
     app.run(host='0.0.0.0', port=5000)
